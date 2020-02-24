@@ -1,0 +1,99 @@
+this file was created by Node.js!I have just added the following new text to this file
+
+Important packages 
+1. validator
+2. chalk
+3. yargs
+
+const msg = getNotes();
+console.log(msg);
+
+console.log(validator.isEmail("naa@gmail.com"));
+console.log(validator.isURL("https://naaz.com"));
+
+console.log(chalk.green.bold.underline.bgWhite("Success"));
+console.log(chalk.red.bold.inverse("Error!"));
+const colorMsg =
+  chalk.red("Red") + chalk.yellow("Yellow") + chalk.green("Green");
+console.log(colorMsg);
+
+console.log(process.argv[2]);
+// ***********************************************************
+
+// ********************************************************************************
+// require("./utils.js");
+// const fs = require("fs"); // loading the FileSystem module
+/**
+ create a new file 'notes..txt' and write some text to it 'this file .....' */
+// fs.writeFileSync("notes.txt", "this file was created by Node.js!");
+
+/**
+ * add more text to the file without deleting the exiting text
+ * use, appendFileSync()
+ */
+
+// fs.appendFileSync(
+//   "notes.txt",
+//   "\n I have just added the following new text to this file"
+// );
+
+// ********************************************************************************
+THIS CODE IS REFACTORED IN THE notes.js
+
+const fs = require("fs");
+const chalk = require("chalk");
+const getNotes = function() {
+  return "Your notes ...";
+};
+
+const addNote = function(title, body) {
+  const notes = loadNotes();
+  const duplicateNotes = notes.filter(function(note) {
+    return note.title === title;
+  });
+
+  if (duplicateNotes.length === 0) {
+    notes.push({
+      title: title,
+      body: body
+    });
+    saveNotes(notes);
+    console.log(chalk.green.inverse("New note added!"));
+  } else {
+    console.log(chalk.red.inverse("Note title taken!"));
+  }
+}; //end of addNote
+
+const removeNote = function(title) {
+  const notes = loadNotes();
+  const notesToKeep = notes.filter(function(note) {
+    return note.title !== title;
+  });
+
+  if (notes.length > notesToKeep.length) {
+    console.log(chalk.bgGreen("Note removed successfully!"));
+    saveNotes(notesToKeep);
+  } else {
+    console.log(chalk.bgRed("No matching notes found!"));
+  }
+}; // end of removeNote
+
+const saveNotes = function(notes) {
+  const dataJSON = JSON.stringify(notes);
+  fs.writeFileSync("notes.json", dataJSON);
+};
+const loadNotes = function() {
+  try {
+    const dataBuffer = fs.readFileSync("notes.json");
+    const dataJSON = dataBuffer.toString();
+    return JSON.parse(dataJSON);
+  } catch (e) {
+    return [];
+  }
+};
+module.exports = {
+  getNotes: getNotes,
+  addNote: addNote,
+  removeNote: removeNote
+};
+//*********************************************************************
